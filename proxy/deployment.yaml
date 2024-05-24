@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: proxy-app 
-        image: piyu5233/project:proxy
+        image: shan20000/k8s_3teir_project:proxy
         ports:
         - name: proxy
           containerPort: 80
