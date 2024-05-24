@@ -1,7 +1,7 @@
 # K8S Three teir project
 step 1
 
-Clone dockerfile of frontend, backend and proxy and Build it. 
+Clone dockerfile of frontend, backend and proxy and Build it. [give your dockerhub repository name]
 
     git init
     git clone https://github.com/shantanu20000/k8s.git
@@ -16,7 +16,7 @@ Clone dockerfile of frontend, backend and proxy and Build it.
 
 Give login and tocken of github
 
-Push images to dockerhub
+Push images to dockerhub [ give your dockerhub repository path ]
 
     docker push shan20000/k8s_3teir_project:backend
     docker push shan20000/k8s_3teir_project:frontend
@@ -34,6 +34,7 @@ step 3
 View all services copy proxy loadbalancer DNS and paste it on url bar of Crome
 
     kubeclt get svc
+
 
 You will see Student form
 
