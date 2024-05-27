@@ -18,7 +18,7 @@ spec:
         spec: 
           containers:
              - name: backendapp
-               image: tomcat
+               image: shan20000/k8s_3teir_project:tomcat
                ports:
                   - containerPort: 8080
                     protocol: TCP
