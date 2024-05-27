@@ -18,7 +18,7 @@ spec:
         spec: 
           containers:
              - name: frontendapp
-               image: nginx
+               image: shan20000/k8s_3teir_project:proxy
                ports:
                   - containerPort: 80
                     protocol: TCP
