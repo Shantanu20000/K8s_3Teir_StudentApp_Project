@@ -7,6 +7,8 @@ Backend:-
 Dockerfile:
 ```
 cat > Dockerfile
+```
+```
 FROM mysql
 ENV MYSQL_ROOT_PASSWORD="1234"
 ENV MYSQL_DATABASE="studentapp"
@@ -15,6 +17,8 @@ COPY init.sql /docker-entrypoint-initdb.d/
 deployment.yaml:
 ```
 cat > deployment.yaml
+```
+```
 apiVersion: apps/v1
 kind: Deployment  
 metadata:
@@ -43,6 +47,8 @@ spec:
 init.sql:
 ```
 cat > init.sql
+```
+```
 CREATE DATABASE IF NOT EXISTS studentapp;
 USE studentapp;
 
@@ -60,6 +66,8 @@ CREATE TABLE IF NOT EXISTS students (
 service.yaml:
 ```
 cat > service.yaml
+```
+```
 apiVersion: v1 
 kind: Service 
 metadata: 
@@ -80,6 +88,8 @@ Frontend:-
 Dockerfile:
 ```
 cat > Dockerfile
+```
+```
 FROM tomcat:9.0-slim
 WORKDIR /opt
 ENV APP_HOME=/usr/local/tomcat
@@ -94,6 +104,8 @@ CMD ["catalina.sh", "run"]
 Service.yaml:
 ```
 cat > service.yaml
+```
+```
 apiVersion: v1 
 kind: Service 
 metadata: 
@@ -111,6 +123,8 @@ spec:
 config:
  ```
 cat> config
+```
+```
 <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource"
 maxTotal="100" maxIdle="30" maxWaitMillis="10000" username="root"
 password="1234" driverClassName="com.mysql.jdbc.Driver"
@@ -120,6 +134,8 @@ url="jdbc:mysql://backend-service:3306/studentapp"/>
 deployment.yaml:
 ```
 cat > deployment.yaml
+```
+```
 apiVersion: apps/v1
 kind: Deployment  
 metadata:
@@ -174,6 +190,8 @@ Proxy:-
 Dokerfile:
 ```
 cat > Dockerfile
+```
+```
 FROM nginx:latest
 
 # Copy the custom configuration file to the NGINX directory
@@ -188,6 +206,8 @@ EXPOSE 80
 service.yaml:
 ```
 cat > service.yaml
+```
+```
 apiVersion: v1 
 kind: Service 
 metadata: 
@@ -204,6 +224,8 @@ spec:
 nginx.config:
 ```
 cat > nginx.conf
+```
+```
 user  nginx;
 worker_processes  1;
 
@@ -246,6 +268,8 @@ http {
 deployment.yaml:
 ```
 cat > deployment.yaml
+```
+```
 apiVersion: apps/v1
 kind: Deployment  
 metadata:
