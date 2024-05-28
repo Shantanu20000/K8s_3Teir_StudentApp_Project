@@ -10,7 +10,6 @@ spec:
   - host: demo.in #Here we paste our dns of loadbalancer
     http:
       paths:
-        
          -  path: /
             pathType: Prefix
             backend:
