@@ -1,0 +1,32 @@
+Master node 
+	It is responsible for managing whole cluster. It monitors the health check of all nodes in the cluster. It stores the members information regarding the different nodes, planning which containers are schedules to which worker nodes, monitoring the containers and nodes, etc
+
+Four basic components of the master node(control plane):
+
+API server
+	The API server is a centralized component where all the cluster components are communicated.
+
+Scheduler
+	Scheduler is responsible for assigning your application pod to worker node. 
+
+Controller manager
+	The Controller Manager maintains the cluster, it handles node failures, replicating components, maintaining the correct number of pods, 
+	
+etcd
+	Etcd is a data store that stores the cluster configuration. It is recommended that you have a back-up as it is the source of truth for your cluster. 
+
+The Worker node
+ 	it is nothing but a virtual machine(VM’s) running in cloud or on-prem, a physical server running inside your data center. So, any hardware capable of running container runtime can become a worker node.
+
+Three basic components of the Worker Node(Data plane)
+
+Kubelet
+	The Kubelet runs and manages the containers on node and it talks to API server.
+
+Kube-proxy
+	The Kube-proxy load balances traffic between application components
+It is also called as service proxy which run on each node in the Kubernetes cluster.
+
+Container runtime
+	Container runtime which runs the containers like Docker, rkt or containerd. Once you have the specification that describe your image for your application, the container runtime will pull the images and and run the containers.:wq
+

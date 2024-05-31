@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-pod
+  labels:
+    app: mysql
+spec:
+  containers:
+  - name: mysql
+    image: mariadb
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      valueFrom:
+        configMapKeyRef:
+          key: MYSQL_PASSWORD
+          name: mysql-cm
+    - name: MYSQL_USER
+      valueFrom:
+        configMapKeyRef:
+          key: MYSQL_USER
+          name: mysql-cm
+    ports:
+    - containerPort: 3306

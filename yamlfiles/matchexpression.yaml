@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  labels:
+    app: my-app
+spec:
+  containers:
+  - name: my-container
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+  nodeSelector:
+    matchExpressions:
+    - key: <label_key>
+      operator: <operator>  # e.g., In, NotIn, Exists, DoesNotExist
+      values:
+      - <label_value>
+
+
+
+
+
+Replace <label_key>, <operator>, and <label_value> with your desired values. For example:
+
+<label_key>: The key of the label you want to match against.
+<operator>: The operator to use for matching (In, NotIn, Exists, DoesNotExist).
+<label_value>: The value(s) to match against.
+
+
+
+kubectl apply -f matchexpressions.yaml

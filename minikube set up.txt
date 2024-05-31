@@ -1,0 +1,200 @@
+   ,     #_
+   ~\_  ####_        Amazon Linux 2023
+  ~~  \_#####\
+  ~~     \###|
+  ~~       \#/ ___   https://aws.amazon.com/linux/amazon-linux-2023
+   ~~       V~' '->
+    ~~~         /
+      ~~._.   _/
+         _/ _/
+       _/m/'
+[ec2-user@ip-172-31-46-163 ~]$ sudo -i
+[root@ip-172-31-46-163 ~]# ls
+[root@ip-172-31-46-163 ~]# yum install docker -y
+Last metadata expiration check: 0:00:37 ago on Sat Apr 13 12:23:44 2024.
+Dependencies resolved.
+===========================================================================================================================================
+ Package                                 Architecture            Version                                Repository                    Size
+===========================================================================================================================================
+Installing:
+ docker                                  x86_64                  25.0.3-1.amzn2023.0.1                  amazonlinux                   44 M
+Installing dependencies:
+ containerd                              x86_64                  1.7.11-1.amzn2023.0.1                  amazonlinux                   35 M
+ iptables-libs                           x86_64                  1.8.8-3.amzn2023.0.2                   amazonlinux                  401 k
+ iptables-nft                            x86_64                  1.8.8-3.amzn2023.0.2                   amazonlinux                  183 k
+ libcgroup                               x86_64                  3.0-1.amzn2023.0.1                     amazonlinux                   75 k
+ libnetfilter_conntrack                  x86_64                  1.0.8-2.amzn2023.0.2                   amazonlinux                   58 k
+ libnfnetlink                            x86_64                  1.0.1-19.amzn2023.0.2                  amazonlinux                   30 k
+ libnftnl                                x86_64                  1.2.2-2.amzn2023.0.2                   amazonlinux                   84 k
+ pigz                                    x86_64                  2.5-1.amzn2023.0.3                     amazonlinux                   83 k
+ runc                                    x86_64                  1.1.11-1.amzn2023.0.1                  amazonlinux                  3.0 M
+
+Transaction Summary
+===========================================================================================================================================
+Install  10 Packages
+
+
+Installed:
+  containerd-1.7.11-1.amzn2023.0.1.x86_64     docker-25.0.3-1.amzn2023.0.1.x86_64    iptables-libs-1.8.8-3.amzn2023.0.2.x86_64           
+  iptables-nft-1.8.8-3.amzn2023.0.2.x86_64    libcgroup-3.0-1.amzn2023.0.1.x86_64    libnetfilter_conntrack-1.0.8-2.amzn2023.0.2.x86_64  
+  libnfnetlink-1.0.1-19.amzn2023.0.2.x86_64   libnftnl-1.2.2-2.amzn2023.0.2.x86_64   pigz-2.5-1.amzn2023.0.3.x86_64                      
+  runc-1.1.11-1.amzn2023.0.1.x86_64          
+
+Complete!
+
+[root@ip-172-31-46-163 ~]# systemctl start docker 
+[root@ip-172-31-46-163 ~]# systemctl enable docker 
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /usr/lib/systemd/system/docker.service.
+
+[root@ip-172-31-46-163 ~]# curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 89.3M  100 89.3M    0     0  28.2M      0  0:00:03  0:00:03 --:--:-- 28.2M
+rm: remove regular file 'minikube-linux-amd64'? y
+[root@ip-172-31-46-163 ~]# cd /usr/local/bin/
+[root@ip-172-31-46-163 bin]# ls
+minikube
+[root@ip-172-31-46-163 bin]# ./minikube start 
+for local user
+* minikube v1.32.0 on Amazon 2023.4.20240401
+* Automatically selected the docker driver. Other choices: ssh, none
+* The "docker" driver should not be used with root privileges. If you wish to continue as root, use --force.
+* If you are running minikube within a VM, consider using --driver=none:
+*   https://minikube.sigs.k8s.io/docs/reference/drivers/none/
+
+X Exiting due to DRV_AS_ROOT: The "docker" driver should not be used with root privileges.
+
+[root@ip-172-31-46-163 bin]# ./minikube start --force
+* minikube v1.32.0 on Amazon 2023.4.20240401
+! minikube skips various validations when --force is supplied; this may lead to unexpected behavior
+* Automatically selected the docker driver. Other choices: none, ssh
+* The "docker" driver should not be used with root privileges. If you wish to continue as root, use --force.
+* If you are running minikube within a VM, consider using --driver=none:
+*   https://minikube.sigs.k8s.io/docs/reference/drivers/none/
+
+X The requested memory allocation of 1901MiB does not leave room for system overhead (total system memory: 1901MiB). You may face stability issues.
+* Suggestion: Start minikube with less memory allocated: 'minikube start --memory=1901mb'
+
+* Using Docker driver with root privileges
+* Starting control plane node minikube in cluster minikube
+* Pulling base image ...
+* Downloading Kubernetes v1.28.3 preload ...
+    > preloaded-images-k8s-v18-v1...:  403.35 MiB / 403.35 MiB  100.00% 37.37 M
+    > gcr.io/k8s-minikube/kicbase...:  452.44 MiB / 453.90 MiB  99.68% 37.80 Mi
+* Creating docker container (CPUs=2, Memory=1901MB) ...
+* Preparing Kubernetes v1.28.3 on Docker 24.0.7 ...
+  - Generating certificates and keys ...
+  - Booting up control plane ...
+  - Configuring RBAC rules ...
+* Configuring bridge CNI (Container Networking Interface) ...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Verifying Kubernetes components...
+* Enabled addons: storage-provisioner, default-storageclass
+* kubectl not found. If you need it, try: 'minikube kubectl -- get pods -A'
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+[root@ip-172-31-46-163 bin]# vim /etc/profile
+ --> at the end line of file
+export PATH=$PATH:'/usr/local/bin' 
+[root@ip-172-31-46-163 bin]# source /etc/profile
+
+[root@ip-172-31-46-163 bin]# ls
+minikube
+[root@ip-172-31-46-163 bin]# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   138  100   138    0     0    777      0 --:--:-- --:--:-- --:--:--   779
+100 47.4M  100 47.4M    0     0   117M      0 --:--:-- --:--:-- --:--:--  272M
+[root@ip-172-31-46-163 bin]# ls
+kubectl  minikube
+[root@ip-172-31-46-163 bin]# sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+install: 'kubectl' and '/usr/local/bin/kubectl' are the same file
+[root@ip-172-31-46-163 bin]# chmod +x kubectl
+[root@ip-172-31-46-163 bin]# ls
+kubectl  minikube
+[root@ip-172-31-46-163 bin]# kubectl cluster-info
+Kubernetes control plane is running at https://192.168.49.2:8443
+CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+[root@ip-172-31-46-163 bin]# kubectl run my-pod --image=nginx --port=80
+pod/my-pod created
+[root@ip-172-31-46-163 bin]# kubectl get pods
+NAME     READY   STATUS    RESTARTS   AGE
+my-pod   1/1     Running   0          51s
+[root@ip-172-31-46-163 bin]# kubectl get nodes
+NAME       STATUS   ROLES           AGE     VERSION
+minikube   Ready    control-plane   6m35s   v1.28.3
+[root@ip-172-31-46-163 bin]# ls
+kubectl  minikube
+[root@ip-172-31-46-163 bin]# kubectl expose pod my-pod --type=NodePort
+service/my-pod exposed
+[root@ip-172-31-46-163 bin]# kubectl get pods -o wide
+NAME     READY   STATUS    RESTARTS   AGE    IP           NODE       NOMINATED NODE   READINESS GATES
+my-pod   1/1     Running   0          3m5s   10.244.0.3   minikube   <none>           <none>
+[root@ip-172-31-46-163 bin]# kubectl get nodes -o wide
+NAME       STATUS   ROLES           AGE     VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION                  CONTAINER-RUNTIME
+minikube   Ready    control-plane   8m49s   v1.28.3   192.168.49.2   <none>        Ubuntu 22.04.3 LTS   6.1.82-99.168.amzn2023.x86_64   docker://24.0.7
+[root@ip-172-31-46-163 bin]# kubectl get pods -o wide
+NAME     READY   STATUS    RESTARTS   AGE     IP           NODE       NOMINATED NODE   READINESS GATES
+my-pod   1/1     Running   0          5m25s   10.244.0.3   minikube   <none>           <none>
+[root@ip-172-31-46-163 bin]# kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        11m
+my-pod       NodePort    10.98.223.133   <none>        80:31222/TCP   3m5s
+[root@ip-172-31-46-163 bin]# curl 192.168.49.2:31222
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+sucessfully done
+
+History
+
+    2  yum install docker -y
+    3  systemctl start docker -y
+    4  systemctl start docker 
+    5  systemctl enable docker 
+    6  curl -O curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    7  sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+    8  curl -O https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    9  sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+   10  ls
+   11  ./usr/local/bin/minikube start
+   12  curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+   13  sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+   14  cd /usr/local/bin/
+   15  ls
+   16  ./minikube start
+   17  ./minikube start --force
+   18  vim /etc/profile
+   19  source /etc/profile
+   20  start minikube
+   21  ls
+   22  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+   23  ls
+   24  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+   25  chmod +x kubectl
+   26  ls
+   27  kubectl cluster-info
+   28  kubectl run my-pod --image=nginx --port=80

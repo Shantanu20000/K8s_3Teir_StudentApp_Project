@@ -1,0 +1,191 @@
+   ,     #_
+   ~\_  ####_        Amazon Linux 2023
+  ~~  \_#####\
+  ~~     \###|
+  ~~       \#/ ___   https://aws.amazon.com/linux/amazon-linux-2023
+   ~~       V~' '->
+    ~~~         /
+      ~~._.   _/
+         _/ _/
+       _/m/'
+Last login: Mon Apr 15 08:21:13 2024 from 13.48.4.202
+[ec2-user@ip-172-31-27-202 ~]$ sudo su
+[root@ip-172-31-27-202 ec2-user]# ls
+[root@ip-172-31-27-202 ec2-user]# cd /usr/local/bin/
+[root@ip-172-31-27-202 bin]# ls
+kubectl  minikube  pod.yaml
+[root@ip-172-31-27-202 bin]# ./minikube start --force
+* minikube v1.32.0 on Amazon 2023.4.20240401
+! minikube skips various validations when --force is supplied; this may lead to unexpected behavior
+* Using the docker driver based on existing profile
+* The "docker" driver should not be used with root privileges. If you wish to continue as root, use --force.
+* If you are running minikube within a VM, consider using --driver=none:
+*   https://minikube.sigs.k8s.io/docs/reference/drivers/none/
+* Tip: To remove this root owned cluster, run: sudo minikube delete
+
+X The requested memory allocation of 1901MiB does not leave room for system overhead (total system memory: 1901MiB). You may face stability issues.
+* Suggestion: Start minikube with less memory allocated: 'minikube start --memory=1901mb'
+
+* Starting control plane node minikube in cluster minikube
+* Pulling base image ...
+* Restarting existing docker container for "minikube" ...
+* Preparing Kubernetes v1.28.3 on Docker 24.0.7 ...
+* Configuring bridge CNI (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: storage-provisioner, default-storageclass
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+[root@ip-172-31-27-202 bin]# vim pod.yaml 
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-three 
+spec:
+  containers:
+  - name: my-proxy
+    image: nginx
+    ports:
+    - containerPort: 80
+      protocol: TCP
+  - name: my-frontend
+    image: tomcat
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+...
+
+[root@ip-172-31-27-202 bin]# kubectl apply -f pod.yaml
+
+[root@ip-172-31-27-202 bin]# kubectl describe pod
+Name:             my-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Mon, 15 Apr 2024 09:11:50 +0000
+Labels:           <none>
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.4
+IPs:
+  IP:  10.244.0.4
+Containers:
+  my-world:
+    Container ID:   docker://2da3652fae89dd5ff81018d3b5997220adbb20946dc5875cb192f2c8ffaeeb7a
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:9ff236ed47fe39cf1f0acf349d0e5137f8b8a6fd0b46e5117a401010e56222e1
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Mon, 15 Apr 2024 10:24:54 +0000
+    Last State:     Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Mon, 15 Apr 2024 09:11:58 +0000
+      Finished:     Mon, 15 Apr 2024 09:19:30 +0000
+    Ready:          True
+    Restart Count:  1
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-wgxdz (ro)
+  my-backend:
+    Container ID:   docker://04bcbc2ff48739e474ec9e5a479bc9ea15f5ebda8147abab64606d69191a58e3
+    Image:          tomcat
+    Image ID:       docker-pullable://tomcat@sha256:0c6f42391c80066ce4ebf635726ace10b1ccd22861683a57c40791ce129d4cb4
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Mon, 15 Apr 2024 10:24:56 +0000
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    143
+      Started:      Mon, 15 Apr 2024 09:12:09 +0000
+      Finished:     Mon, 15 Apr 2024 09:19:30 +0000
+    Ready:          True
+    Restart Count:  1
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-wgxdz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-wgxdz:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason          Age   From               Message
+  ----    ------          ----  ----               -------
+  Normal  Scheduled       74m   default-scheduler  Successfully assigned default/my-pod to minikube
+  Normal  Pulling         74m   kubelet            Pulling image "nginx"
+  Normal  Pulled          74m   kubelet            Successfully pulled image "nginx" in 6.689s (6.689s including waiting)
+  Normal  Created         74m   kubelet            Created container my-world
+  Normal  Started         74m   kubelet            Started container my-world
+  Normal  Pulling         74m   kubelet            Pulling image "tomcat"
+  Normal  Pulled          74m   kubelet            Successfully pulled image "tomcat" in 10.952s (10.953s including waiting)
+  Normal  Created         74m   kubelet            Created container my-backend
+  Normal  Started         74m   kubelet            Started container my-backend
+  Normal  SandboxChanged  95s   kubelet            Pod sandbox changed, it will be killed and re-created.
+  Normal  Pulling         94s   kubelet            Pulling image "nginx"
+  Normal  Pulled          92s   kubelet            Successfully pulled image "nginx" in 1.416s (1.416s including waiting)
+  Normal  Created         92s   kubelet            Created container my-world
+  Normal  Started         92s   kubelet            Started container my-world
+  Normal  Pulling         92s   kubelet            Pulling image "tomcat"
+  Normal  Pulled          91s   kubelet            Successfully pulled image "tomcat" in 1.174s (1.174s including waiting)
+  Normal  Created         91s   kubelet            Created container my-backend
+  Normal  Started         90s   kubelet            Started container my-backend
+[root@ip-172-31-27-202 bin]# ls
+kubectl  minikube  pod.yaml
+[root@ip-172-31-27-202 bin]# kubectl get svc
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   122m
+[root@ip-172-31-27-202 bin]# kubectl get pod
+NAME     READY   STATUS    RESTARTS      AGE
+my-pod   2/2     Running   2 (70m ago)   78m
+[root@ip-172-31-27-202 bin]# kubectl get pod -o wide
+NAME     READY   STATUS    RESTARTS      AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+my-pod   2/2     Running   2 (70m ago)   78m   10.244.0.4   minikube   <none>           <none>
+[root@ip-172-31-27-202 bin]# curl 10.244.0.4:80
+^C
+[root@ip-172-31-27-202 bin]# minikube ssh
+docker@minikube:~$ 10.244.0.4:80
+-bash: 10.244.0.4:80: command not found
+docker@minikube:~$ curl 10.244.0.4:80
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+docker@minikube:~$ curl 10.244.0.4:8080
+<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Description</b> The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.</p><hr class="line" /><h3>Apache Tomcat/10.1.20</h3></body></html>docker@minikube:~$ 
+logout

@@ -1,0 +1,44 @@
+#controlplane $ cat > emptydir.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myvolemptydir
+spec:
+  containers:
+    - name: c1
+      image: centos
+      command: ["/bin/bash", "-c", "sleep 15000"]
+      volumeMounts:
+        - name: volume
+          mountPath: "/tmp/c1"
+    - name: c2
+      image: centos
+      command: ["/bin/bash", "-c", "sleep 15000"]
+      volumeMounts:
+        - name: volume
+          mountPath: "/tmp/c2"
+  volumes:
+    - name: volume
+      emptyDir: {}
+# controlplane $ kubectl apply -f emptydir.yml 
+> pod/myvolemptydir created
+#controlplane $ kubectl get pods -o wide
+> NAME            READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+> myvolemptydir   2/2     Running   0          25s   192.168.1.4   node01   <none>           <none>
+#controlplane $ kubectl exec -it myvolemptydir -c c2 -- /bin/bash
+[root@myvolemptydir /]# ls
+> bin  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+[root@myvolemptydir /]# cd /tmp/
+[root@myvolemptydir tmp]# ls
+> c1  ks-script-4luisyla  ks-script-o23i7rc2  ks-script-x6ei4wuu
+[root@myvolemptydir tmp]# cd c1
+[root@myvolemptydir c1]# ls
+[root@myvolemptydir c1]# echo "Hyee! how are you?" > file1
+[root@myvolemptydir c1]# exit
+#controlplane $ kubectl exec -it myvolemptydir -c c2 -- /bin/bash
+[root@myvolemptydir /]# cd /tmp/c2/
+[root@myvolemptydir c2]# ls
+> file1
+[root@myvolemptydir c2]# cat file1 
+> Hyee! how are you?
+[root@myvolemptydir c2]# 

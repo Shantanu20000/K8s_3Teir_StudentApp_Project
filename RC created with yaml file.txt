@@ -1,0 +1,251 @@
+   ,     #_
+   ~\_  ####_        Amazon Linux 2023
+  ~~  \_#####\
+  ~~     \###|
+  ~~       \#/ ___   https://aws.amazon.com/linux/amazon-linux-2023
+   ~~       V~' '->
+    ~~~         /
+      ~~._.   _/
+         _/ _/
+       _/m/'
+Last login: Mon Apr 15 10:23:27 2024 from 13.48.4.202
+[ec2-user@ip-172-31-27-202 ~]$ sudo su
+[root@ip-172-31-27-202 ec2-user]# cd /urs/local/bin
+bash: cd: /urs/local/bin: No such file or directory
+[root@ip-172-31-27-202 ec2-user]# cd /usr/local/bin
+[root@ip-172-31-27-202 bin]# ls
+kubectl  minikube  pod.yaml
+[root@ip-172-31-27-202 bin]# minikube start --force
+* minikube v1.32.0 on Amazon 2023.4.20240401
+! minikube skips various validations when --force is supplied; this may lead to unexpected behavior
+* Using the docker driver based on existing profile
+* The "docker" driver should not be used with root privileges. If you wish to continue as root, use --force.
+* If you are running minikube within a VM, consider using --driver=none:
+*   https://minikube.sigs.k8s.io/docs/reference/drivers/none/
+* Tip: To remove this root owned cluster, run: sudo minikube delete
+
+X The requested memory allocation of 1901MiB does not leave room for system overhead (total system memory: 1901MiB). You may face stability issues.
+* Suggestion: Start minikube with less memory allocated: 'minikube start --memory=1901mb'
+
+* Starting control plane node minikube in cluster minikube
+* Pulling base image ...
+* Restarting existing docker container for "minikube" ...
+* Preparing Kubernetes v1.28.3 on Docker 24.0.7 ...
+* Configuring bridge CNI (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: storage-provisioner, default-storageclass
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+[root@ip-172-31-27-202 bin]# ls
+kubectl  minikube  pod.yaml
+[root@ip-172-31-27-202 bin]# ls
+kubectl  minikube  pod.yaml
+[root@ip-172-31-27-202 bin]# vim pod.yaml 
+[root@ip-172-31-27-202 bin]# ls
+kubectl  minikube  pod.yaml
+[root@ip-172-31-27-202 bin]# kubectl get pod
+NAME     READY   STATUS    RESTARTS      AGE
+my-pod   2/2     Running   4 (15m ago)   3h16m
+[root@ip-172-31-27-202 bin]# kubectl delete my-pod
+error: the server doesn't have a resource type "my-pod"
+[root@ip-172-31-27-202 bin]# kubectl delete pod my-pod
+pod "my-pod" deleted
+[root@ip-172-31-27-202 bin]# kubectl apply -f pod.yaml 
+Error from server (NotFound): error when creating "pod.yaml": namespaces "ops" not found
+[root@ip-172-31-27-202 bin]# kubectl ns ls
+error: unknown command "ns" for "kubectl"
+
+Did you mean this?
+        cp
+[root@ip-172-31-27-202 bin]# kubectl ns list
+error: unknown command "ns" for "kubectl"
+
+Did you mean this?
+        cp
+[root@ip-172-31-27-202 bin]# kubectl get ns
+NAME              STATUS   AGE
+default           Active   4h5m
+kube-node-lease   Active   4h5m
+kube-public       Active   4h5m
+kube-system       Active   4h5m
+[root@ip-172-31-27-202 bin]# kubectl create ns opd
+namespace/opd created
+[root@ip-172-31-27-202 bin]# kubectl create ns ops
+namespace/ops created
+[root@ip-172-31-27-202 bin]# kubectl get ns
+NAME              STATUS   AGE
+default           Active   4h5m
+kube-node-lease   Active   4h5m
+kube-public       Active   4h5m
+kube-system       Active   4h5m
+opd               Active   9s
+ops               Active   5s
+[root@ip-172-31-27-202 bin]# kubectl delete ns ops
+namespace "ops" deleted
+^[[A^[[B[root@ip-172-31-27-202 bin]# kubectl delete ns opd
+namespace "opd" deleted
+[root@ip-172-31-27-202 bin]# kubectl create ns ops
+namespace/ops created
+[root@ip-172-31-27-202 bin]# kubectl apply -f pod.yaml 
+replicationcontroller/my-rc created
+[root@ip-172-31-27-202 bin]# kubectl get pod -n ops
+NAME          READY   STATUS    RESTARTS   AGE
+my-rc-7phpx   1/1     Running   0          21s
+my-rc-jlshs   1/1     Running   0          21s
+my-rc-zn6jm   1/1     Running   0          21s
+[root@ip-172-31-27-202 bin]# kubectl edit rc -nops
+Edit cancelled, no changes made.
+[root@ip-172-31-27-202 bin]# kubectl edit rc -nops
+replicationcontroller/my-rc edited
+[root@ip-172-31-27-202 bin]# kubectl get pod -n ops
+No resources found in ops namespace.
+[root@ip-172-31-27-202 bin]# kubectl get pod -o wide-n ops 
+Error from server (NotFound): pods "ops" not found
+[root@ip-172-31-27-202 bin]# kubectl get pod -o wide -n ops 
+No resources found in ops namespace.
+[root@ip-172-31-27-202 bin]# kubectl edit rc -nops
+replicationcontroller/my-rc edited
+[root@ip-172-31-27-202 bin]# kubectl get pod -o wide -n ops 
+NAME          READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+my-rc-87cwx   1/1     Running   0          8s    10.244.0.16   minikube   <none>           <none>
+my-rc-gpnfk   1/1     Running   0          8s    10.244.0.15   minikube   <none>           <none>
+[root@ip-172-31-27-202 bin]# minikube ssh
+docker@minikube:~$ curl 10.244.0.16
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+docker@minikube:~$ curl 10.244.0.15
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+docker@minikube:~$ 
+logout
+[root@ip-172-31-27-202 bin]# kubectl edit rc -nops
+replicationcontroller/my-rc edited
+[root@ip-172-31-27-202 bin]# kubectl get pod -o wide -n ops 
+NAME          READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+my-rc-87cwx   1/1     Running   0          2m14s   10.244.0.16   minikube   <none>           <none>
+my-rc-gpnfk   1/1     Running   0          2m14s   10.244.0.15   minikube   <none>           <none>
+[root@ip-172-31-27-202 bin]# minikube ssh
+docker@minikube:~$ curl 10.244.0.16
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+docker@minikube:~$ curl 10.244.0.15
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+docker@minikube:~$ 
+logout
+[root@ip-172-31-27-202 bin]# kubectl get pod
+No resources found in default namespace.
+[root@ip-172-31-27-202 bin]# kubectl get pod -n ops
+NAME          READY   STATUS    RESTARTS   AGE
+my-rc-87cwx   1/1     Running   0          3m44s
+my-rc-gpnfk   1/1     Running   0          3m44s
+[root@ip-172-31-27-202 bin]# kubectl delete pod my-rc-87cw -n ops
+Error from server (NotFound): pods "my-rc-87cw" not found
+[root@ip-172-31-27-202 bin]# kubectl delete pod my-rc-87cwx -n ops
+pod "my-rc-87cwx" deleted
+[root@ip-172-31-27-202 bin]# kubectl delete pod my-rc-gpnfk -n ops
+pod "my-rc-gpnfk" deleted
+[root@ip-172-31-27-202 bin]# kubectl get pod -n ops
+NAME          READY   STATUS    RESTARTS   AGE
+my-rc-6rc9t   1/1     Running   0          8s
+my-rc-x9fgn   1/1     Running   0          46s
+[root@ip-172-31-27-202 bin]# minikube ssh
+docker@minikube:~$ curl 10.244.0.17
+curl: (7) Failed to connect to 10.244.0.17 port 80 after 0 ms: Connection refused
+docker@minikube:~$ 
+logout
+ssh: Process exited with status 7
+[root@ip-172-31-27-202 bin]# kubectl get pod -n ops -o wide
+NAME          READY   STATUS    RESTARTS   AGE    IP            NODE       NOMINATED NODE   READINESS GATES
+my-rc-6rc9t   1/1     Running   0          70s    10.244.0.18   minikube   <none>           <none>
+my-rc-x9fgn   1/1     Running   0          108s   10.244.0.17   minikube   <none>           <none>
+[root@ip-172-31-27-202 bin]# minikube ssh
+docker@minikube:~$ curl 10.244.0.18
+curl: (7) Failed to connect to 10.244.0.18 port 80 after 0 ms: Connection refused
+docker@minikube:~$ curl 10.244.0.18:8080
+<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Description</b> The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.</p><hr class="line" /><h3>Apache Tomcat/10.1.20</h3></body></html>docker@minikube:~$ curl 10.244.0.17:8080
+<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Description</b> The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.</p><hr class="line" /><h3>Apache Tomcat/10.1.20</h3></body></html>docker@minikube:~$

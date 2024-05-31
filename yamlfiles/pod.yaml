@@ -1,0 +1,19 @@
+---Successfull---
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-three 
+spec:
+  containers:
+  - name: my-proxy
+    image: nginx
+    ports:
+    - containerPort: 80
+      protocol: TCP
+  - name: my-frontend
+    image: tomcat
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+...

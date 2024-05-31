@@ -1,0 +1,50 @@
+[root@ip-172-31-9-188 ~]# cat > pv.yml 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data
+[root@ip-172-31-9-188 ~]# cat > pvc.yml 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+[root@ip-172-31-9-188 ~]# cat > pod.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+    - name: my-container
+      image: nginx
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: my-storage
+  volumes:
+    - name: my-storage
+      persistentVolumeClaim:
+        claimName: my-pvc
+[root@ip-172-31-9-188 ~]# ls
+pod.yml  pv.yml  pvc.yml
+[root@ip-172-31-9-188 ~]# kubectl apply -f pv.yaml
+error: the path "pv.yaml" does not exist
+[root@ip-172-31-9-188 ~]# kubectl apply -f pv.yml
+persistentvolume/my-pv created
+[root@ip-172-31-9-188 ~]# kubectl apply -f pvc.yml
+persistentvolumeclaim/my-pvc created
+[root@ip-172-31-9-188 ~]# kubectl apply -f pod.yml
+pod/my-pod created

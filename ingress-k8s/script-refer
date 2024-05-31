@@ -1,0 +1,145 @@
+Initialising Kubernetes... done
+
+controlplane $ git clone https://github.com/Shantanu20000/k8s.git
+Cloning into 'k8s'...
+remote: Enumerating objects: 95, done.
+remote: Counting objects: 100% (95/95), done.
+remote: Compressing objects: 100% (88/88), done.
+remote: Total 95 (delta 41), reused 21 (delta 5), pack-reused 0
+Unpacking objects: 100% (95/95), 23.34 KiB | 1.17 MiB/s, done.
+controlplane $ ls
+filesystem  k8s  snap
+controlplane $ pwd
+/root
+controlplane $ cd k8s/
+controlplane $ ls
+README.md  backend  frontend  ingress  proxy
+controlplane $ cd ingress/
+controlplane $ ls
+frontend  ingress.yml  student
+controlplane $ cd frontend/
+controlplane $ ls
+deployment_hpa.yaml  service.yaml
+controlplane $ kubectl apply -f deployment_hpa.yaml 
+deployment.apps/deployappfront created
+horizontalpodautoscaler.autoscaling/hpa created
+controlplane $ kubectl apply -f service.yaml        
+service/frontendsrv created
+controlplane $ kubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+deployappfront-6d9c559f56-8b5kw   1/1     Running   0          20s
+deployappfront-6d9c559f56-gp2bx   1/1     Running   0          20s
+controlplane $ cd ..
+controlplane $ l
+frontend/  ingress.yml  student/
+controlplane $ cd ..
+controlplane $ ls
+README.md  backend  frontend  ingress  proxy
+controlplane $ cd ingress/
+controlplane $ ls
+frontend  ingress.yml  student
+controlplane $ ls
+frontend  ingress.yml  student
+controlplane $ cd student/
+controlplane $ ls
+deployment-hpa.yml  service.yml
+controlplane $ kubectl apply  -f deployment-hpa.yml 
+deployment.apps/deployappback created
+horizontalpodautoscaler.autoscaling/hpa configured
+controlplane $ kubectl apply -f service.yml 
+service/backendsrv created
+controlplane $ kubectl get svc
+NAME          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+backendsrv    ClusterIP   10.98.154.187   <none>        8080/TCP   27s
+frontendsrv   ClusterIP   10.96.211.193   <none>        80/TCP     2m41s
+kubernetes    ClusterIP   10.96.0.1       <none>        443/TCP    15d
+controlplane $ ls
+deployment-hpa.yml  service.yml
+controlplane $ cat service.yml 
+apiVersion: v1
+kind: Service
+metadata: 
+  name: backendsrv
+spec:
+  type: ClusterIP
+  selector:
+    app: deployappback 
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: tomcat
+      protocol: TCPcontrolplane $ cd ..
+controlplane $ ls
+frontend  ingress.yml  student
+controlplane $ kubectl apply -f ingress.yml 
+ingress.networking.k8s.io/oneingress created
+controlplane $ kubectl get svc
+NAME          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+backendsrv    ClusterIP   10.98.154.187   <none>        8080/TCP   75s
+frontendsrv   ClusterIP   10.96.211.193   <none>        80/TCP     3m29s
+kubernetes    ClusterIP   10.96.0.1       <none>        443/TCP    15d
+controlplane $ kubectl get ingress
+NAME         CLASS   HOSTS     ADDRESS   PORTS   AGE
+oneingress   nginx   demo.in             80      17s
+controlplane $ curl https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz
+Warning: Binary output can mess up your terminal. Use "--output -" to tell 
+Warning: curl to output it to your terminal anyway, or consider "--output 
+Warning: <FILE>" to save to a file.
+controlplane $ curl -O https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 15.8M  100 15.8M    0     0  84.4M      0 --:--:-- --:--:-- --:--:-- 84.4M
+controlplane $ ls
+frontend  helm-v3.15.1-linux-amd64.tar.gz  ingress.yml  student
+controlplane $ tar -xvzf helm-v3.15.1-linux-amd64.tar.gz 
+linux-amd64/
+linux-amd64/README.md
+linux-amd64/LICENSE
+linux-amd64/helm
+controlplane $ ls
+frontend  helm-v3.15.1-linux-amd64.tar.gz  ingress.yml  linux-amd64  student
+controlplane $ mv linux-amd64/helm /usr/local/bin/helm
+controlplane $ helm install my-release oci://ghcr.io/nginxinc/charts/nginx-ingress --version 1.2.1
+Pulled: ghcr.io/nginxinc/charts/nginx-ingress:1.2.1
+Digest: sha256:acbd92df4be12f82f2b9c50b633229e32904301dbbd2f22154efd8c8e5795810
+NAME: my-release
+LAST DEPLOYED: Mon May 27 12:26:41 2024
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+NGINX Ingress Controller 3.5.1 has been installed.
+
+For release notes for this version please see: https://docs.nginx.com/nginx-ingress-controller/releases/
+
+Installation and upgrade instructions: https://docs.nginx.com/nginx-ingress-controller/installation/installing-nic/installation-with-helm/
+controlplane $ ls
+frontend  helm-v3.15.1-linux-amd64.tar.gz  ingress.yml  linux-amd64  student
+controlplane $ kubeclt get svc
+
+Command 'kubeclt' not found, did you mean:
+
+  command 'kubectl' from snap kubectl (1.29.4)
+
+See 'snap info <snapname>' for additional versions.
+
+controlplane $ kubectl get svc -o wide
+NAME                                  TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE     SELECTOR
+backendsrv                            ClusterIP      10.98.154.187    <none>        8080/TCP                     6m19s   app=deployappback
+frontendsrv                           ClusterIP      10.96.211.193    <none>        80/TCP                       8m33s   app=deployappfront
+kubernetes                            ClusterIP      10.96.0.1        <none>        443/TCP                      15d     <none>
+my-release-nginx-ingress-controller   LoadBalancer   10.109.246.118   apadldjf2q8fksf9rlkr39r3df9su3lr3kru9doa.com     80:31737/TCP,443:32377/TCP   45s     app.kubernetes.io/instance=my-release,app.kubernetes.io/name=nginx-ingress
+
+
+
+
+Copy load balancer dns and past in ingress file at host value
+
+
+
+hit dns and check it 
+
+
+
+

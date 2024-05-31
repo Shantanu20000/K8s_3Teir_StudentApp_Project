@@ -1,0 +1,36 @@
+Two container run on Same pod with Load balancer Service
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-four
+  labels:
+    app: my-four
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+    ports:
+    - containerPort: 80
+      protocol: TCP
+  - name: httpd-container
+    image: tomcat 
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+---        
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: my-four
+  ports:
+  - name: nginx-port
+    protocol: TCP
+    port: 80
+  - name: tomcat-port
+    protocol: TCP
+    port: 8080

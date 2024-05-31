@@ -1,0 +1,66 @@
+[root@ip-172-31-46-163 kube]# cat config.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-pod
+  labels:
+    app: mysql
+spec:
+  containers:
+  - name: mysql
+    image: mariadb
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      valueFrom:
+        configMapKeyRef:
+          key: MYSQL_PASSWORD
+          name: mysql-cm
+    - name: MYSQL_USER
+      valueFrom:
+        configMapKeyRef:
+          key: MYSQL_USER
+          name: mysql-cm
+    ports:
+    - containerPort: 3306
+[root@ip-172-31-46-163 kube]# ls
+ConfigMap.yaml  LICENSE  README.md  config.yaml  kubeval  kubeval-linux-amd64.tar.gz  pod.yml  statefulset.yml
+[root@ip-172-31-46-163 kube]# cat ConfigMap.yaml 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-cm
+data:
+  MYSQL_PASSWORD: 1234shan
+  MYSQL_USER: root 
+
+[root@ip-172-31-46-163 kube]#
+
+[root@ip-172-31-46-163 kube]# kubectl apply -f config.yaml 
+pod/mysql-pod created
+
+[root@ip-172-31-46-163 kube]# kubectl exec -it mysql-pod -- env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=mysql-pod
+TERM=xterm
+MYSQL_USER=root
+MYSQL_ROOT_PASSWORD=1234shan
+MYPOD_SERVICE_PORT=80
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+MYPOD_PORT=tcp://10.99.28.38:80
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+MYPOD_SERVICE_HOST=10.99.28.38
+MYPOD_PORT_80_TCP_PROTO=tcp
+MYPOD_PORT_80_TCP_PORT=80
+MYPOD_PORT_80_TCP_ADDR=10.99.28.38
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+MYPOD_PORT_80_TCP=tcp://10.99.28.38:80
+GOSU_VERSION=1.17
+LANG=C.UTF-8
+MARIADB_VERSION=1:11.3.2+maria~ubu2204
+HOME=/root
+[root@ip-172-31-46-163 kube]#

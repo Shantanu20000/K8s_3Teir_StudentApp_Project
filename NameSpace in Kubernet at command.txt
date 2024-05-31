@@ -1,0 +1,114 @@
+Name Space 
+
+[root@ip-172-31-46-163 bin]# kubectl get ns
+NAME              STATUS   AGE
+default           Active   18m
+kube-node-lease   Active   18m
+kube-public       Active   18m
+kube-system       Active   18m
+[root@ip-172-31-46-163 bin]# kubectl create ns dev
+namespace/dev created
+[root@ip-172-31-46-163 bin]# kubectl get pods -n dev
+No resources found in dev namespace.
+[root@ip-172-31-46-163 bin]# kubectl run pods -n dev --image=nginx
+pod/pods created
+[root@ip-172-31-46-163 bin]# kubectl get pods -n dev
+NAME   READY   STATUS    RESTARTS   AGE
+pods   1/1     Running   0          6s
+[root@ip-172-31-46-163 bin]# kubectl get nodes -n dev
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   21m   v1.28.3
+[root@ip-172-31-46-163 bin]# kuvectl get pods -A
+-bash: kuvectl: command not found
+[root@ip-172-31-46-163 bin]# kubectl get pods -A
+NAMESPACE     NAME                               READY   STATUS    RESTARTS      AGE
+default       my-pod                             1/1     Running   0             17m
+dev           pods                               1/1     Running   0             2m34s
+kube-system   coredns-5dd5756b68-k27bb           1/1     Running   0             23m
+kube-system   etcd-minikube                      1/1     Running   0             23m
+kube-system   kube-apiserver-minikube            1/1     Running   0             23m
+kube-system   kube-controller-manager-minikube   1/1     Running   0             23m
+kube-system   kube-proxy-9sf8p                   1/1     Running   0             23m
+kube-system   kube-scheduler-minikube            1/1     Running   0             23m
+kube-system   storage-provisioner                1/1     Running   1 (22m ago)   23m
+[root@ip-172-31-46-163 bin]# kubectl get all -A
+NAMESPACE     NAME                                   READY   STATUS    RESTARTS      AGE
+default       pod/my-pod                             1/1     Running   0             18m
+dev           pod/pods                               1/1     Running   0             2m49s
+kube-system   pod/coredns-5dd5756b68-k27bb           1/1     Running   0             23m
+kube-system   pod/etcd-minikube                      1/1     Running   0             23m
+kube-system   pod/kube-apiserver-minikube            1/1     Running   0             23m
+kube-system   pod/kube-controller-manager-minikube   1/1     Running   0             23m
+kube-system   pod/kube-proxy-9sf8p                   1/1     Running   0             23m
+kube-system   pod/kube-scheduler-minikube            1/1     Running   0             23m
+kube-system   pod/storage-provisioner                1/1     Running   1 (22m ago)   23m
+
+NAMESPACE     NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                  AGE
+default       service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP                  23m
+default       service/my-pod       NodePort    10.98.223.133   <none>        80:31222/TCP             15m
+kube-system   service/kube-dns     ClusterIP   10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP   23m
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kube-proxy   1         1         1       1            1           kubernetes.io/os=linux   23m
+
+NAMESPACE     NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+kube-system   deployment.apps/coredns   1/1     1            1           23m
+
+NAMESPACE     NAME                                 DESIRED   CURRENT   READY   AGE
+kube-system   replicaset.apps/coredns-5dd5756b68   1         1         1       23m
+[root@ip-172-31-46-163 bin]# kubectl describe pod my-pod
+
+
+
+
+
+
+
+Make changes in Pods container
+
+
+
+[root@ip-172-31-46-163 bin]# ls
+kubectl  minikube
+[root@ip-172-31-46-163 bin]# kubectl exec -it my-pod -c my-pod -- bash
+root@my-pod:/# ls
+bin   dev                  docker-entrypoint.sh  home  lib64  mnt  proc  run   srv  tmp  var
+boot  docker-entrypoint.d  etc                   lib   media  opt  root  sbin  sys  usr
+root@my-pod:/# cd /usr/  
+root@my-pod:/usr# ls
+bin  games  include  lib  lib64  libexec  local  sbin  share  src
+root@my-pod:/usr# cd share/
+root@my-pod:/usr/share# ls
+X11              bug              debianutils  dpkg        gdb       libc-bin     man         nginx        pixmaps   util-linux
+base-files       ca-certificates  dict         fontconfig  info      libgcrypt20  maven-repo  pam          polkit-1  xml
+base-passwd      common-licenses  doc          fonts       java      lintian      menu        pam-configs  tabset    zoneinfo
+bash-completion  debconf          doc-base     gcc         keyrings  locale       misc        perl5        terminfo  zsh
+root@my-pod:/usr/share# cd nginx/
+root@my-pod:/usr/share/nginx# ls
+html
+root@my-pod:/usr/share/nginx# cd html/
+root@my-pod:/usr/share/nginx/html# ls
+50x.html  index.html
+root@my-pod:/usr/share/nginx/html# cat index.html 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+
+</body>
+</html>
+root@my-pod:/usr/share/nginx/html# cat > index.html 
+This is My first Kubernetes containerroot@my-pod:/usr/share/nginx/html# ls
+50x.html  index.html
+root@my-pod:/usr/share/nginx/html#   
+exit
+[root@ip-172-31-46-163 bin]# curl 192.168.49.2:31222
+This is My first Kubernetes container
