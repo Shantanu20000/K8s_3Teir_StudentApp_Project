@@ -140,4 +140,3 @@ spec:
    23  docker push shan20000/k8s_3teir_project:frontend
    24  docker push shan20000/k8s_3teir_project:proxy
 
-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
