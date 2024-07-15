@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: tomcat
-        image: shan20000/k8s_3teir_project:frontend
+        image: shan20000/k8s_3teir_project:my-frontend
         ports:
         - containerPort: 8080
         env:
@@ -22,9 +22,7 @@ spec:
           value: mysql-service
         - name: MYSQL_PORT
           value: "3306"
-        # Add any other environment variables your Tomcat application needs
 ---
-# Define the deployment for the MySQL database
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,15 +39,13 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: shan20000/k8s_3teir_project:backend
+        image: shan20000/k8s_3teir_project:my-backend
         ports:
         - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "1234"
-        # Add any other environment variables or volume mounts needed for MySQL data persistence
 ---
-# Define the deployment for the proxy
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -66,11 +62,10 @@ spec:
     spec:
       containers:
       - name: proxy
-        image: shan20000/k8s_3teir_project:proxy
+        image: shan20000/k8s_3teir_project:my-proxy
         ports:
         - containerPort: 80
 ---
-# Define a service to expose MySQL within the Kubernetes cluster
 apiVersion: v1
 kind: Service
 metadata:
@@ -84,7 +79,6 @@ spec:
       targetPort: 3306
   type: ClusterIP
 ---
-# Define a service to expose Tomcat application
 apiVersion: v1
 kind: Service
 metadata:
@@ -98,7 +92,6 @@ spec:
       targetPort: 8080
   type: ClusterIP
 ---
-# Define a service to expose the proxy
 apiVersion: v1
 kind: Service
 metadata:
@@ -111,9 +104,3 @@ spec:
       port: 80
       targetPort: 80
   type: LoadBalancer
-
-
-
-
-
- 
